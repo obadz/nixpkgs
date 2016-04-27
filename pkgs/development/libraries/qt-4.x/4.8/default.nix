@@ -13,6 +13,7 @@
 , demos ? false
 # darwin support
 , cf-private, libobjc, ApplicationServices, OpenGL, Cocoa, AGL, libcxx
+, xmlpatterns ? true
 }:
 
 with stdenv.lib;
@@ -107,7 +108,7 @@ stdenv.mkDerivation rec {
 
       ${if mysql != null then "-plugin" else "-no"}-sql-mysql -system-sqlite
 
-      -exceptions -xmlpatterns
+      ${if xmlpatterns then "-exceptions -xmlpatterns" else "-no-exceptions"}
 
       -make libs -make tools -make translations
       -${if demos then "" else "no"}make demos
