@@ -85,4 +85,18 @@ rec {
 
   triggerRebuild = drv: i: overrideCabal drv (drv: { postUnpack = ": trigger rebuild ${toString i}"; });
 
+  cabalFilter = src:
+    let
+      f = path: type:
+        let isIn = prefix: (pkgs.lib.hasPrefix ((toString src) + "/" + prefix) (toString path));
+            bn   = baseNameOf path;
+        in
+          !(pkgs.lib.hasSuffix "~" bn) &&
+          !(pkgs.lib.hasPrefix "." bn) &&
+          !(isIn ".cabal-sandbox") &&
+          !(isIn ".git") &&
+          !(isIn ".stack-work") &&
+          !(isIn "cabal.sandbox.config") &&
+          !(isIn "dist");
+    in builtins.filterSource f src;
 }
