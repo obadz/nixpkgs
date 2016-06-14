@@ -1,0 +1,51 @@
+diff -ru php-5.2.17/configure php-5.2.17-new/configure
+--- php-5.2.17/configure
++++ php-5.2.17-new/configure
+
+@@ -4313,7 +4313,7 @@
+ 
+   case $host_alias in
+   *aix*)
+-    APXS_LIBEXECDIR=`$APXS -q LIBEXECDIR`
++    APXS_LIBEXECDIR="$prefix/modules"
+     EXTRA_LDFLAGS="$EXTRA_LDFLAGS -Wl,-brtl -Wl,-bI:$APXS_LIBEXECDIR/httpd.exp"
+     PHP_AIX_LDFLAGS="-Wl,-brtl"
+     build_type=shared
+@@ -4508,7 +4508,7 @@
+   if test "$?" != "0"; then
+     APACHE_INSTALL="$APXS -i -a -n php5 $SAPI_SHARED" # Old apxs does not have -S option
+   else 
+-    APXS_LIBEXECDIR='$(INSTALL_ROOT)'`$APXS -q LIBEXECDIR`
++    APXS_LIBEXECDIR="$prefix/modules"
+     if test -z `$APXS -q SYSCONFDIR`; then
+       APACHE_INSTALL="\$(mkinstalldirs) '$APXS_LIBEXECDIR' && \
+                        $APXS -S LIBEXECDIR='$APXS_LIBEXECDIR' \
+@@ -5656,7 +5656,7 @@
+     { echo "configure: error: Please note that Apache version >= 2.0.40 is required" 1>&2; exit 1; }
+   fi
+ 
+-  APXS_LIBEXECDIR='$(INSTALL_ROOT)'`$APXS -q LIBEXECDIR`
++  APXS_LIBEXECDIR="$prefix/modules"
+   if test -z `$APXS -q SYSCONFDIR`; then
+     INSTALL_IT="\$(mkinstalldirs) '$APXS_LIBEXECDIR' && \
+                  $APXS -S LIBEXECDIR='$APXS_LIBEXECDIR' \
+@@ -6504,7 +6504,7 @@
+     { echo "configure: error: Please note that Apache version >= 2.0.44 is required" 1>&2; exit 1; }
+   fi
+ 
+-  APXS_LIBEXECDIR='$(INSTALL_ROOT)'`$APXS -q LIBEXECDIR`
++  APXS_LIBEXECDIR="$prefix/modules"
+   if test -z `$APXS -q SYSCONFDIR`; then
+     INSTALL_IT="\$(mkinstalldirs) '$APXS_LIBEXECDIR' && \
+                  $APXS -S LIBEXECDIR='$APXS_LIBEXECDIR' \
+@@ -43800,9 +43800,7 @@
+ 
+ 
+ if test "$PHP_GETTEXT" != "no"; then
+-  for i in $PHP_GETTEXT /usr/local /usr; do
+-    test -r $i/include/libintl.h && GETTEXT_DIR=$i && break
+-  done
++  GETTEXT_DIR=$PHP_GETTEXT 
+ 
+   if test -z "$GETTEXT_DIR"; then
+     { echo "configure: error: Cannot locate header file libintl.h" 1>&2; exit 1; }

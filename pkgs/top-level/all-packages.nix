@@ -5637,6 +5637,7 @@ in
   });
 
   inherit (callPackages ../development/interpreters/php { })
+    php52
     php55
     php56
     php70;
