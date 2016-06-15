@@ -85,6 +85,18 @@ let
           buildInputs = [ libxml2 ];
         };
 
+        disablexml = {
+          configureFlags = [
+            "--disable-dom"
+            "--disable-simplexml"
+            "--disable-xml"
+            "--disable-xmlreader"
+            "--disable-xmlwriter"
+            "--without-pear"
+            "--disable-libxml"
+          ];
+        };
+
         pcntl = {
           configureFlags = [ "--enable-pcntl" ];
         };
@@ -223,41 +235,42 @@ let
       };
 
       cfg = {
-        imapSupport         = config.php.imap                     or (!stdenv.isDarwin);
-        ldapSupport         = (!php52) && (config.php.ldap        or true);
-        mhashSupport        = (!php52) && (config.php.mhash       or true);
-        mysqlSupport        = (!php7) && (config.php.mysql        or true);
-        mysqliSupport       = config.php.mysqli                   or true;
-        pdo_mysqlSupport    = config.php.pdo_mysql                or true;
-        libxml2Support      = config.php.libxml2                  or true;
-        apxs2Support        = config.php.apxs2                    or (!stdenv.isDarwin);
-        bcmathSupport       = config.php.bcmath                   or true;
-        socketsSupport      = config.php.sockets                  or true;
-        curlSupport         = config.php.curl                     or true;
-        curlWrappersSupport = (!php7) && (config.php.curlWrappers or true);
-        gettextSupport      = config.php.gettext                  or true;
-        pcntlSupport        = config.php.pcntl                    or true;
-        postgresqlSupport   = config.php.postgresql               or true;
-        pdo_pgsqlSupport    = config.php.pdo_pgsql                or true;
-        readlineSupport     = config.php.readline                 or true;
-        sqliteSupport       = config.php.sqlite                   or true;
-        soapSupport         = config.php.soap                     or true;
-        zlibSupport         = config.php.zlib                     or true;
-        opensslSupport      = config.php.openssl                  or true;
-        mbstringSupport     = config.php.mbstring                 or true;
-        gdSupport           = (!php52) && (config.php.gd          or true);
-        intlSupport         = config.php.intl                     or true;
-        exifSupport         = config.php.exif                     or true;
-        xslSupport          = config.php.xsl                      or false;
-        mcryptSupport       = config.php.mcrypt                   or true;
-        bz2Support          = config.php.bz2                      or false;
-        zipSupport          = config.php.zip                      or true;
-        ftpSupport          = config.php.ftp                      or true;
-        fpmSupport          = config.php.fpm                      or true;
-        gmpSupport          = config.php.gmp                      or true;
-        mssqlSupport        = (!php7) && (config.php.mssql        or (!stdenv.isDarwin));
-        ztsSupport          = config.php.zts                      or false;
-        calendarSupport     = config.php.calendar                 or true;
+        imapSupport         =              config.php.imap         or (!stdenv.isDarwin);
+        ldapSupport         = (!php52) && (config.php.ldap         or true);
+        mhashSupport        = (!php52) && (config.php.mhash        or true);
+        mysqlSupport        = (!php7)  && (config.php.mysql        or true);
+        mysqliSupport       =              config.php.mysqli       or true;
+        pdo_mysqlSupport    =              config.php.pdo_mysql    or true;
+        libxml2Support      = (!php52) && (config.php.libxml2      or true);
+        disablexmlSupport   = php52;
+        apxs2Support        =              config.php.apxs2        or (!stdenv.isDarwin);
+        bcmathSupport       =              config.php.bcmath       or true;
+        socketsSupport      =              config.php.sockets      or true;
+        curlSupport         =              config.php.curl         or true;
+        curlWrappersSupport = (!php7)  && (config.php.curlWrappers or true);
+        gettextSupport      =              config.php.gettext      or true;
+        pcntlSupport        =              config.php.pcntl        or true;
+        postgresqlSupport   =              config.php.postgresql   or true;
+        pdo_pgsqlSupport    =              config.php.pdo_pgsql    or true;
+        readlineSupport     =              config.php.readline     or true;
+        sqliteSupport       =              config.php.sqlite       or true;
+        soapSupport         = (!php52) &&  config.php.soap         or true;
+        zlibSupport         =              config.php.zlib         or true;
+        opensslSupport      =              config.php.openssl      or true;
+        mbstringSupport     =              config.php.mbstring     or true;
+        gdSupport           = (!php52) && (config.php.gd           or true);
+        intlSupport         =              config.php.intl         or true;
+        exifSupport         =              config.php.exif         or true;
+        xslSupport          =              config.php.xsl          or false;
+        mcryptSupport       =              config.php.mcrypt       or true;
+        bz2Support          =              config.php.bz2          or false;
+        zipSupport          =              config.php.zip          or true;
+        ftpSupport          =              config.php.ftp          or true;
+        fpmSupport          =              config.php.fpm          or true;
+        gmpSupport          = (!php52) &&  config.php.gmp          or true;
+        mssqlSupport        = (!php7)  && (config.php.mssql        or (!stdenv.isDarwin));
+        ztsSupport          =              config.php.zts          or false;
+        calendarSupport     =              config.php.calendar     or true;
       };
 
       configurePhase = ''
