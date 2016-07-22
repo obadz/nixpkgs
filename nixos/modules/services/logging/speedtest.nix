@@ -35,15 +35,14 @@ in {
   config = mkIf cfg.enable {
     systemd.services.speedtest = mkIf cfg.enable {
       description = "speedtest log collector";
+      script = with builtins; ''
+        ${pkgs.speedtest-cli}/bin/speedtest --simple ${lib.optionalString (isInt cfg.server) (" --server " + (toString cfg.server))} |
+          xargs
+      '';
       serviceConfig = {
         Type  = "oneshot";
         User  = "nobody";
         Group = "nogroup";
-        ExecStart = with builtins; pkgs.writeScript "speedtest.sh" ''
-          #! ${pkgs.bash}/bin/bash
-          ${pkgs.speedtest-cli}/bin/speedtest --simple ${lib.optionalString (isInt cfg.server) (" --server " + (toString cfg.server))} |
-            xargs
-        '';
       };
     };
 
