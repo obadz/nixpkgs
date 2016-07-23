@@ -11,6 +11,11 @@ let
 
     outputs = [ "dev" "out" "man" "doc" ];
 
+    patches = [ (fetchurl {
+      url    = "https://patch-diff.githubusercontent.com/raw/NixOS/nix/pull/994.patch";
+      sha256 = "1yn60pk1jszrfvg8c2dy31j1xvjxgbn8gp4sxn601k5mfx6bx9sh";
+    }) ];
+
     nativeBuildInputs = [ perl pkgconfig ];
 
     buildInputs = [ curl openssl sqlite xz ]
