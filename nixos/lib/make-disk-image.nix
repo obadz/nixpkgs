@@ -27,6 +27,8 @@
 
 , name ? "nixos-disk-image"
 
+, rootFsLabel ? "nixos"
+
 , format ? "raw"
 }:
 
@@ -60,7 +62,7 @@ pkgs.vmTools.runInLinuxVM (
       ''}
 
       # Create an empty filesystem and mount it.
-      mkfs.${fsType} -L nixos $rootDisk
+      mkfs.${fsType} -L ${rootFsLabel} $rootDisk
       ${optionalString (fsType == "ext4") ''
         tune2fs -c 0 -i 0 $rootDisk
       ''}
