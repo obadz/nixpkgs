@@ -498,6 +498,19 @@ sub getEfiTarget {
     }
 }
 
+sub inferRootDev {
+    my $rootPart = shift;
+    my $rootPartAbs = Cwd::abs_path($rootPart);
+
+    if ($rootPartAbs ~= /^(.*\D)\d+/)
+    {
+        my $rootDev = $1;
+        return $rootDev if -e $rootDev;
+    }
+
+    die "$0: can't infer rootdev from root partition $rootPart (=> $rootPartAbs)"
+}
+
 my @deviceTargets = getDeviceTargets();
 my $efiTarget = getEfiTarget();
 my $prevGrubState = readGrubState();
@@ -513,6 +526,12 @@ if (($ENV{'NIXOS_INSTALL_GRUB'} // "") eq "1") {
     $ENV{'NIXOS_INSTALL_BOOTLOADER'} = "1";
 }
 my $requireNewInstall = $devicesDiffer || $nameDiffer || $versionDiffer || $efiDiffer || $efiMountPointDiffer || (($ENV{'NIXOS_INSTALL_BOOTLOADER'} // "") eq "1");
+
+if (($ENV{'NIXOS_INSTALL_GRUB'} // "") eq "0")
+{
+    print STDERR "not installing GRUB as NIXOS_INSTALL_GRUB is set to 0\n";
+    exit 0
+}
 
 # install a symlink so that grub can detect the boot drive
 my $tmpDir = File::Temp::tempdir(CLEANUP => 1) or die "Failed to create temporary space";
