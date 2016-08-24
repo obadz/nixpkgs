@@ -1,5 +1,6 @@
-{stdenv, fetchurl, fetchFromGitHub, callPackage, makeWrapper, doxygen
-, ffmpeg, python3Packages, qt55}:
+{ stdenv, fetchurl, fetchFromGitHub, callPackage, makeWrapper, doxygen
+, ffmpeg, python3Packages, qt55, gnome3, wrapGAppsHook 
+}:
 
 with stdenv.lib;
 
@@ -17,7 +18,7 @@ stdenv.mkDerivation rec {
     sha256 = "1s4b61fd8cyjy8kvc25mqd97dkxx6gqmz02i42rrcriz51pw8wgh";
   };
 
-  buildInputs = [doxygen python3Packages.python makeWrapper ffmpeg];
+  buildInputs = [ doxygen python3Packages.python makeWrapper ffmpeg gnome3.adwaita-icon-theme wrapGAppsHook ];
 
   propagatedBuildInputs = [
     qt55.qtbase
@@ -26,14 +27,16 @@ stdenv.mkDerivation rec {
   ];
 
   installPhase = ''
-    mkdir -p $(toPythonPath $out)
-    cp -r src/* $(toPythonPath $out)
+    pout="$(toPythonPath $out)"
+    mkdir -p "$pout"
+    cp -r src/* "$pout"
     mkdir -p $out/bin
-    echo "#/usr/bin/env sh" >$out/bin/openshot-qt
-    echo "exec ${python3Packages.python.interpreter} $(toPythonPath $out)/launch.py" >>$out/bin/openshot-qt
-    chmod +x $out/bin/openshot-qt
-    wrapProgram $out/bin/openshot-qt \
-      --prefix PYTHONPATH : "$(toPythonPath $out):$(toPythonPath ${libopenshot}):$(toPythonPath ${python3Packages.pyqt5}):$(toPythonPath ${python3Packages.sip}):$(toPythonPath ${python3Packages.httplib2}):$PYTHONPATH"
+    makeWrapper "${python3Packages.python.interpreter} \"$pout/launch.py\"" $out/bin/openshot-qt \
+      --prefix PYTHONPATH : "$pout" \
+      --prefix PYTHONPATH : "$(toPythonPath ${libopenshot})" \
+      --prefix PYTHONPATH : "$(toPythonPath ${python3Packages.pyqt5})" \
+      --prefix PYTHONPATH : "$(toPythonPath ${python3Packages.sip_4_16})" \
+      --prefix PYTHONPATH : "$(toPythonPath ${python3Packages.httplib2})"
   '';
 
   doCheck = false;
@@ -42,7 +45,7 @@ stdenv.mkDerivation rec {
     homepage = "http://openshot.org/";
     description = "Free, open-source video editor";
     license = licenses.gpl3Plus;
-    maintainers = [maintainers.tohl];
+    maintainers = [ maintainers.tohl ];
     platforms = platforms.linux;
   };
 }
